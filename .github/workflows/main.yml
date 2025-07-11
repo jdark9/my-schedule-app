@@ -1,0 +1,43 @@
+name: Build Flet Android App
+
+on:
+  # يسمح لك بتشغيل هذا الإجراء يدويًا من تبويب Actions
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # الخطوة 1: الحصول على الكود من المستودع
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # الخطوة 2: تجهيز بيئة بايثون
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # الخطوة 3: بناء ملف APK
+      - name: Build Flet app APK
+        uses: flet-dev/flet-build@v1
+        with:
+          module-name: final_android_app.py
+          platform: android
+
+      # الخطوة 4: بناء ملف AAB
+      - name: Build Flet app AAB
+        uses: flet-dev/flet-build@v1
+        with:
+          module-name: final_android_app.py
+          platform: aab
+
+      # الخطوة 5: رفع الملفات النهائية
+      - name: Upload Android Builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-Builds
+          path: |
+            build/apk/*.apk
+            build/aab/*.aab
